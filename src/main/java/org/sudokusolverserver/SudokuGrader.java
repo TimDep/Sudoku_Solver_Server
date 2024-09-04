@@ -3,7 +3,7 @@ package org.sudokusolverserver;
 import java.util.ArrayList;
 
 public class SudokuGrader {
-    public boolean gradePuzzle(int[][] board) {
+    public boolean gradePuzzle(int[][] board, ArrayList<String> result) {
         ArrayList<Integer>[][] possibleValues = new ArrayList[9][9];
         for (int i = 0; i < 9; i++) {
             for (int j = 0; j < 9; j++) {
@@ -22,11 +22,13 @@ public class SudokuGrader {
         int changes = BasicTechniques.removeFixedNumbers(board, possibleValues);
         if (changes > 0) {
             System.out.println("Remove Fixed numbers Applied: " + changes);
+            result.add("Remove Fixed numbers Applied: " + changes);
             SudokuMain.printBoard(board);
+            result.add(SudokuMain.printSequence(board));
         }
 
 
-        basicCount += applyBasicTechniquesUntilStalled(board, basicCount, possibleValues);
+        basicCount += applyBasicTechniquesUntilStalled(board, basicCount, possibleValues, result);
         if (isSolved(board)) {
             System.out.println("Difficulty is easy");
             return true;
@@ -58,7 +60,7 @@ public class SudokuGrader {
         return false;
     }
 
-    private int applyBasicTechniquesUntilStalled(int[][] board, int count, ArrayList<Integer>[][] possibleValues) {
+    private int applyBasicTechniquesUntilStalled(int[][] board, int count, ArrayList<Integer>[][] possibleValues, ArrayList<String> result) {
         boolean nakedTriplesProgress;
         do {
             boolean hiddenPairsProgress;
@@ -72,7 +74,9 @@ public class SudokuGrader {
                             int changes = BasicTechniques.applyNakedSingle(board, possibleValues);
                             if (changes > 0) {
                                 System.out.println("Naked Single Applied: " + changes);
+                                result.add("Naked Single Applied: " + changes);
                                 SudokuMain.printBoard(board);
+                                result.add(SudokuMain.printSequence(board));
                             }
                             count += changes;
                             nakedProgress = (changes > 0);
@@ -81,7 +85,9 @@ public class SudokuGrader {
                         int changes = BasicTechniques.applyHiddenSingle(board, possibleValues);
                         if (changes > 0) {
                             System.out.println("Hidden Single Applied: " + changes);
+                            result.add("Hidden Single Applied: " + changes);
                             SudokuMain.printBoard(board);
+                            result.add(SudokuMain.printSequence(board));
                         }
                         count += changes;
                         hiddenProgress = (changes > 0);
@@ -91,7 +97,9 @@ public class SudokuGrader {
                     int changes = IntermediateTechniques.applyNakedPairs(board, possibleValues);
                     if (changes > 0) {
                         System.out.println("Naked Pair Applied: " + changes);
+                        result.add("Naked Pair Applied: " + changes);
                         SudokuMain.printBoard(board);
+                        result.add(SudokuMain.printSequence(board));
                     }
                     count += changes;
                     nakedPairsProgress = (changes > 0);
@@ -100,7 +108,9 @@ public class SudokuGrader {
                 int changes = IntermediateTechniques.applyHiddenPairs(board, possibleValues);
                 if (changes > 0) {
                     System.out.println("Hidden Pair Applied: " + changes);
+                    result.add("Hidden Pair Applied: " + changes);
                     SudokuMain.printBoard(board);
+                    result.add(SudokuMain.printSequence(board));
                 }
                 count += changes;
                 hiddenPairsProgress = (changes > 0);
@@ -109,7 +119,9 @@ public class SudokuGrader {
             int changes = HardTechniques.applyNakedTriples(board, possibleValues);
             if (changes > 0) {
                 System.out.println("Naked Triples Applied: " + changes);
+                result.add("Naked Triples Applied: " + changes);
                 SudokuMain.printBoard(board);
+                result.add(SudokuMain.printSequence(board));
             }
             count += changes;
             nakedTriplesProgress = (changes > 0);
